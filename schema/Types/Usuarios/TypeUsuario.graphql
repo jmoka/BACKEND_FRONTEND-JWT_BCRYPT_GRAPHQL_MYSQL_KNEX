@@ -1,0 +1,10 @@
+type Query {
+  usuarios: [Usuario]
+  usuarioID(id: Int): Usuario
+  usuarioNome(nome: String): Usuario
+  perfis: [Perfil]
+  perfilID(id: Int): Perfil
+  perfilNome(nome: String): Perfil
+  perfilRotulo(rotulo: String): Perfil
+  UsuarioPerfil: [UsuarioPerfil]
+}
