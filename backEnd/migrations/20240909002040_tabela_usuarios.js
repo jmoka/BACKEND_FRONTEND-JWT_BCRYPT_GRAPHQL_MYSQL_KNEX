@@ -17,7 +17,7 @@ exports.up = async function (knex) {
     })
 
     // Gerar o hash da senha do usuário master
-    const hashedPassword = await Criarhash(process.env.DB_PASS) // resolve a promese
+    const hashedPassword = await Criarhash(process.env.DB_MASTER) // resolve a promese
 
     // Inserir o usuário master
     await knex("usuarios").insert([

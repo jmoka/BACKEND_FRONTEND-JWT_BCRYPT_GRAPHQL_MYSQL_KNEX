@@ -7,7 +7,7 @@ const config = {
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       port: process.env.DB_PORT,
-      secret: process.env.DB_SECRET,
+      //   secret: process.env.DB_SECRET,
     },
     migrations: {
       directory: './migrations',
@@ -30,7 +30,7 @@ const config = {
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       port: process.env.DB_PORT,
-      secret: process.env.DB_SECRET,
+      //  secret: process.env.DB_SECRET,
       ssl: { // Opcional: Se o seu banco de dados requer SSL
         rejectUnauthorized: false
       }

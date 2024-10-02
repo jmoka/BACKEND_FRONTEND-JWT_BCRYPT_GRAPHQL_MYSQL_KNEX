@@ -11,12 +11,23 @@ const AutenticarHash = {
             throw error
         }
 
+    },
+
+    async Autenticar(senha, hash) {
+        const comparacao = bcrypt.compareSync(senha, hash)
+        console.log(comparacao);
+
+        try {
+            if (comparacao) {
+                console.log(`a Senha ${senha} coresponde ao hash informado ${hash}`);
+                return "x"
+            }
+        } catch (error) {
+
+        }
     }
-
-
-
 
 }
 
 
-module.exports = AutenticarHash;
+module.exports = AutenticarHash
