@@ -3,10 +3,12 @@
  * @returns { Promise<void> } 
  */
 exports.seed = async function (knex) {
-
-  await knex('perfis').insert([
-    { nome: "user", rotulo: 'Usuário' },
+  const perfis = [
     { nome: "admin", rotulo: 'Administrador' },
-    { nome: "master", rotulo: 'Master' }
-  ]);
+    { nome: "user", rotulo: 'Usuário' },
+  ]
+
+  await knex('perfis').insert(perfis)
 };
+
+

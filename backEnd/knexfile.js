@@ -1,14 +1,13 @@
-const dotenv = require('dotenv');
-dotenv.config(); // Carrega as variáveis de ambiente do arquivo .env
-
 const config = {
   development: {
-    client: 'mysql',
+    client: 'mysql2',
     connection: {
-      host: process.env.DB_HOST,
+      host: process.env.DB_HOST,      // Note o uso de process.env
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database: process.env.DB_NAME
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT,
+      secret: process.env.DB_SECRET,
     },
     migrations: {
       directory: './migrations',
@@ -24,13 +23,14 @@ const config = {
   },
 
   production: {
-    client: 'mysql', // ou outro cliente que você estiver usando em produção
+    client: 'mysql2',
     connection: {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      port: process.env.DB_PORT || 3306, // Certifique-se de definir a porta correta
+      port: process.env.DB_PORT,
+      secret: process.env.DB_SECRET,
       ssl: { // Opcional: Se o seu banco de dados requer SSL
         rejectUnauthorized: false
       }
@@ -45,9 +45,9 @@ const config = {
     pool: {
       min: 2,
       max: 20
-    },
-    // Outras opções específicas para produção podem ser adicionadas aqui
+    }
   },
 };
+
 
 module.exports = config;

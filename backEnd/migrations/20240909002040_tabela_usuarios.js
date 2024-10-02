@@ -12,11 +12,20 @@ exports.up = function (knex, Promise) {
             table.integer("perfil").notNullable()
             table.string("status").notNullable()
             table.timestamp("data_criacao").defaultTo(knex.fn.now())
-        }).then(function () {
-            return knex("usuarios").insert([
-                { nome: "master", email: 'master@master.com', senha: process.env.SENHA_MASTER, perfil: 1, status: "ATIVO" }
 
+            // criar hash para inserir a senha do perfil master
+
+        }).then(function () {
+            const usuarioMaster = knex("usuarios").insert([
+                {
+                    nome: "master",
+                    email: 'master@master.com',
+                    senha: process.env.DB_MASTER,
+                    perfil: 1,
+                    status: "ATIVO"
+                }
             ])
+            return usuarioMaster
         })
 
 };

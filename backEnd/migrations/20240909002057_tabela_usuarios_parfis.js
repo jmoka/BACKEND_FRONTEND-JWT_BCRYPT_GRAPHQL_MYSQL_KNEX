@@ -10,6 +10,14 @@ exports.up = function (knex, Promise) {
             table.integer("perfil_id").unsigned()
             table.foreign("usuario_id").references("usuarios.id")
             table.foreign("perfil_id").references("perfis.id")
+        }).then(function () {
+            const relacaoMaster = knex("usuario-perfis").insert(
+                {
+                    usuario_id: 1,
+                    perfil_id: 1
+                }
+            )
+            return relacaoMaster;
         })
 
 };

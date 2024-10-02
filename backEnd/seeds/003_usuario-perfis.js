@@ -6,6 +6,10 @@
 exports.seed = async function (knex) {
 
     await knex('usuario-perfis').insert([
-        { usuario_id: 1, perfil_id: 3 },
-    ]);
+        // inserindo o perfil o admin na tabela referência
+        {
+            usuario_id: 2,
+            perfil_id: 2
+        },
+    ])
 };
