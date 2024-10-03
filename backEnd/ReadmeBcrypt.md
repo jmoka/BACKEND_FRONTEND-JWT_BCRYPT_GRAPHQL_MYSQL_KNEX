@@ -118,20 +118,36 @@ bcrypt.hash(senha, saltRounds, function (err, hash) {
 });
 ```
 
+### 3.1 Hashing da Senha
+
+    async Criarhash(senha) {
+        try {
+            const hash = await bcrypt.hash(senha, 10)
+            return hash
+        } catch (error) {
+            console.error(error)
+            throw error
+        }
+
+    },
+
 ### 4. Verificação da Senha
 
 ```javascript
 const hashArmazenado =
   "$2b$10$EixZaYVK1fsbw1ZfbX3OXe.PjDq5n8LRsP3VJb8wN3O6R2f1BhUam"; // Exemplo de hash armazenado
 
-bcrypt.compare(senha, hashArmazenado, function (err, result) {
-  if (err) throw err;
-  if (result) {
-    console.log("Senha válida!");
-  } else {
-    console.log("Senha inválida!");
-  }
-});
+ async Autenticar(senha, hash) {
+        const comparacao = bcrypt.compareSync(senha, hash)
+        try {
+            if (comparacao) {
+                console.log(`a Senha ${senha} coresponde ao hash informado ${hash}`);
+                return comparacao;
+            }
+        } catch (error) {
+
+        }
+    }
 ```
 
 ### 5. Exemplo Completo com `async/await`

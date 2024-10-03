@@ -3,7 +3,8 @@ require('module-alias/register')
 const db = require("@data/db")
 const TodosUsuarios = require("./consultar/todosUsuarios.js")
 const UsuarioNome = require("./consultar/usuarioNome.js")
-const { Usuario_ID } = require("./consultar/usuarioID.js")
+const { UsuarioID } = require("./consultar/usuarioID.js")
+const UsuarioLogado = require("./consultar/loginUsuario.js")
 
 
 module.exports = {
@@ -11,11 +12,15 @@ module.exports = {
         return TodosUsuarios();
     },
     usuarioID(_, { id }) {
-        return Usuario_ID(id)
+        return UsuarioID(id)
 
     },
     usuarioNome(_, { nome }) {
         return UsuarioNome(nome)
     },
+
+    UsuarioLogado(_, { dados }) {
+        return UsuarioLogado(dados)
+    }
 
 }

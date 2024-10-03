@@ -50,3 +50,8 @@ input FiltrarPerfil {
   nome: String
   rotulo: String
 }
+
+input login {
+  email: String!
+  senha: String!
+}
