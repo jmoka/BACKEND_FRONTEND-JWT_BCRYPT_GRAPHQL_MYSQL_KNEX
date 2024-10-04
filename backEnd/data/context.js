@@ -1,8 +1,8 @@
+module.exports = async ({ req }) => {
+    await require('./simularUsuarioLogado')(req)
 
-// // Testando a simulação
-// const x = async ({ req }) => {
-//     await require("./simularUsuarioLogado")(req)
+    const auth = req.headers.authorization
+    console.log(auth);
 
-//     const auth = req.headers.authorization; // Obtendo o cabeçalho de autorização
-//     console.log(auth);
-// };
+
+};

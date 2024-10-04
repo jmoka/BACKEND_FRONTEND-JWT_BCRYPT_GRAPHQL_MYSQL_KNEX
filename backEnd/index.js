@@ -4,12 +4,15 @@ const { ApolloServer, gql } = require('apollo-server')
 const { importSchema } = require('graphql-import')
 const resolvers = require('./resolvers')
 const CriarBaseDados = require("./data/criarDB")
-require('module-alias/register')
+
+const context = require("./data/context")
 
 const schemaPath = './schema/index.graphql'
+
 const server = new ApolloServer({
     typeDefs: importSchema(schemaPath),
-    resolvers
+    resolvers,
+    context
 })
 
 CriarBaseDados();
