@@ -1,16 +1,13 @@
 const db = require("@data/db");
 const validarEmail = require("@data/validacoes/ValidarUsuarios/validarEmail");
-const {Usuario_ID} =  require("../../Types/Usuarios/consultar/usuarioID");
-const {Criarhash} = require("../../../autenticacao/hash")
-
-const perfilDefault = 1;
+const {Usuario_ID} =  require("../../../Types/Usuarios/consultar/usuarioID");
+const {criarHash} = require("../../../../autenticacao/hash")
+const perfilDefault = 3;
 const statuDefault = 'ATIVO'
 
 module.exports = {
-
-    async novoUsuario(_, { user }) {
-     
-        
+    async novoUsuario(user) {
+                       
         try {
             // Verifica se o e-mail já está cadastrado
             const emailExistente = await validarEmail(user.email);
@@ -19,15 +16,16 @@ module.exports = {
                 throw new Error("Usuário já cadastrado com esse email = " + user.email);
             }
             // criando hash da senha
-             const senhaHash = await Criarhash(user.senha)   
-             
+                    
+            const senhaHash = await criarHash(user.senha)   
+                       
             // Cria um novo usuário usando os atributos fornecidos em user
             let UsuarioEnviado = {
                 nome: user.nome,
                 email: user.email,
                 senha: senhaHash,
-                perfil: user.perfil || perfilDefault, // Usa perfilDefault se não for fornecido          
-                status: user.status || statuDefault // Usa statuDefault se não for fornecido
+                perfil: user.perfil || 3, // Usa perfilDefault se não for fornecido          
+                status: user.status || ATIVO // Usa statuDefault se não for fornecido
             };
 
             // insere o usuario
@@ -43,6 +41,8 @@ module.exports = {
             await db("usuario-perfis").insert(UsuarioPerfil)
             
             // retorna uario cadastrado
+            console.log(`Usuário com ID: ${idUsuario.id} e Nome: ${user.nome} cadastrado com exito!!`);
+            
             return Usuario_ID(usuarioInserido) 
             
             }                    

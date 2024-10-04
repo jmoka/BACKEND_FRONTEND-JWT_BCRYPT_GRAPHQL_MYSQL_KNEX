@@ -4,46 +4,45 @@ const validarIdUsuarios = require("@data/validacoes/ValidarUsuarios/validarID");
 const validarNomeUsuarios = require("@data/validacoes/ValidarUsuarios/validarNome");
 
 module.exports = {
-    async excluirUsuario(_, { filtro }) {
+    async excluirUsuario(filtro) {
         const { id, nome, email } = filtro;
 
-        // Verificar se pelo menos um dos valores foi fornecido
-        if (!id && !nome && !email) {
-            throw new Error("Informe o ID, nome ou email.");
+       
+        if (id === 2 || id === 1 || nome === "master" || nome === "admin" || email === "master@master.com" || email === "admin@jota.com") {
+            console.log("Usuário não pode ser deletado");
+            throw new Error("Usuário não pode ser deletado");
         }
 
         let usuarioEncontrado;
-        let criterio = {};
 
         // Validar e buscar o usuário
         if (id) {
             await validarIdUsuarios(id);
             usuarioEncontrado = await db("usuarios").where({ id }).first();
-            criterio = { id };
-            await db("usuario-perfis").where({ usuario_id: id }).del()
+            if (!usuarioEncontrado) {
+                throw new Error(`Usuario com Id ${id} não encontrado!!`);
+            }     
+                           
+           await db("usuario-perfis").where({ usuario_id: id }).del()
 
-            // console.log(`Usuario deletado da tabela de referência com perfis ${JSON.stringify(usuarioEncontrado)}`);
         } else if (nome) {
             await validarNomeUsuarios(nome);
             usuarioEncontrado = await db("usuarios").where({ nome }).first();
-            criterio = { nome };
-            await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
-            // console.log(`Usuario deletado da tabela de referência com perfis ${JSON.stringify(usuarioEncontrado)}`);
-
-
+            if (!usuarioEncontrado) {
+                throw new Error(`Usuario com Nome ${nome} não encontrado!!`);
+            }
+           await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
+        
         } else if (email) {
             await validarEmail(email);
             usuarioEncontrado = await db("usuarios").where({ email }).first();
-            criterio = { email };
-            await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
-            // console.log(`Usuario deletado da tabela de referência com perfis ${JSON.stringify(usuarioEncontrado)}`);
+            if (!usuarioEncontrado) {
+                throw new Error(`Usuario com Email ${Email} não encontrado!!`);
+            }
+           await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
         }
-        await db("usuarios").where(criterio).del()
-
-
-        // console.log(`Usuário com ${JSON.stringify(criterio)} deletado.`);
-
-
+     
+ 
         const perfil = await db("perfis").where({ id: usuarioEncontrado.perfil }).first()
         const retorno = {
             id: usuarioEncontrado.id,
@@ -57,6 +56,7 @@ module.exports = {
                 rotulo: perfil.rotulo
             }
         }
+        console.log(`Usuário com ID: ${retorno.id} e Nome: ${retorno.nome} Deletado com sucesso!! `);
         return retorno;
     },
 

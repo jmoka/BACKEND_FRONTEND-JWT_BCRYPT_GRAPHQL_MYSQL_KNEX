@@ -2,7 +2,7 @@ const db = require("@data/db");
 
 module.exports = {
 
-    async novoPerfil(_, { perfil }) {
+    async novoPerfil(perfil) {
         try {
             const perfis = await db("perfis")
             const novoPerfil = {
@@ -32,9 +32,7 @@ module.exports = {
                     rotulo: perfilNovo.rotulo
                 }
 
-                // console.log(retorno);
-
-
+                console.log(`Perfil com ID:${retorno.id} e Nome:${retorno.nome} criado com Sucesso!!`);
                 return retorno
             }
 

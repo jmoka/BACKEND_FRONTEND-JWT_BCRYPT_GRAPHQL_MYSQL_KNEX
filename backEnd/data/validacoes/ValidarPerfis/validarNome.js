@@ -1,9 +1,9 @@
 const db = require('@data/db');
-async function validarNomeUsuarios(nome) {
+async function validarNomePerfil(nome) {
     try {
-        const usuario = await db("usuarios").where({ nome: nome })
+        const perfil = await db("perfis").where({ nome: nome })
         if (usuario.length > 0) {
-            return true
+            return perfil
         } else {
             return false
         }
@@ -11,4 +11,4 @@ async function validarNomeUsuarios(nome) {
         throw new Error("Informe um valor válido");
     }
 }
-module.exports = validarNomeUsuarios;
+module.exports = validarNomePerfil;

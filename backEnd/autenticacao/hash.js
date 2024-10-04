@@ -18,10 +18,10 @@ const AutenticarHash = {
         try {
             const comparacao = await bcrypt.compare(senha, hash);
             if (comparacao) {
-                //  console.log(`A senha fornecida corresponde ao hash armazenado.`);
+
                 return true;
             } else {
-                //  console.log(`A senha fornecida NÃO corresponde ao hash armazenado.`);
+
                 return false;
             }
         } catch (error) {

@@ -1,6 +1,6 @@
 const db = require("@data/db")
 module.exports = {
-    async alterarUsuario(_, { user, filtro }) {
+    async alterarUsuario( user, filtro) {
         const { id, nome, email } = filtro
        
         let usuarioEncontrado;
@@ -30,6 +30,7 @@ module.exports = {
                         rotulo: perfil.rotulo
                     }
                 }
+                console.log(`Usuário com ID: ${retorno.id} atualizado com sucesso!! `);
                 return retorno;
             } else if (nome) {
                 usuarioEncontrado = await db("usuarios")
@@ -50,6 +51,7 @@ module.exports = {
                         rotulo: perfil.rotulo
                     }
                 }
+                console.log(`Usuário com Nome: ${retorno.nome} atualizado com sucesso!! `);
                 return retorno;
             } else if (email) {
              
@@ -71,7 +73,8 @@ module.exports = {
                         rotulo: perfil.rotulo
                     }
                 }
-                              
+                console.log(`Usuário com Email: ${retorno.email} atualizado com sucesso!! `);
+                       
                 return retorno;
             } else {
                 throw new Error("Nenhum critério válido foi fornecido para atualizar o usuário.");

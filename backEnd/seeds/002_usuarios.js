@@ -1,4 +1,4 @@
-const { Criarhash } = require('../autenticacao/hash')
+const { criarHash } = require('../autenticacao/hash')
 
 
 /**
@@ -9,7 +9,7 @@ exports.seed = async function (knex) {
 
     // criar hash para inserir a senha do perfil master
 
-    const hash = await Criarhash(process.env.DB_ADMIN);
+    const hash = await criarHash(process.env.DB_ADMIN);
 
     await knex('usuarios').insert([
         { nome: "admin", email: "admin@jota.com", senha: hash, perfil: 2, status: "ATIVO" },

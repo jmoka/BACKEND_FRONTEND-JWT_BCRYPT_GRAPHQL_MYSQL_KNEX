@@ -1,4 +1,4 @@
-const { Criarhash } = require('../autenticacao/hash')
+const { criarHash } = require('../autenticacao/hash')
 
 /**
  * @param { import("knex").Knex } knex
@@ -17,10 +17,10 @@ exports.up = async function (knex) {
     })
 
     // Gerar o hash da senha do usuário master
-    const hashedPassword = await Criarhash(process.env.DB_MASTER) // resolve a promese
+    const hashedPassword = await criarHash(process.env.DB_MASTER) // resolve a promese
 
     // Inserir o usuário master
-    await knex("usuarios").insert([
+    const usuarioInserido = await knex("usuarios").insert([
         {
             nome: "master",
             email: 'master@master.com',
@@ -29,6 +29,7 @@ exports.up = async function (knex) {
             status: "ATIVO"
         }
     ])
+    return usuarioInserido
 };
 
 /**

@@ -35,6 +35,8 @@ async function UsuarioEmail(email) {
         return resultado;
     } catch (error) {
         console.error(`Usuario com email informado não está cadastrado!!`);
+        throw new Error("Usuario com email informado não está cadastrado!!");
+
 
     }
 }
