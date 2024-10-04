@@ -1,9 +1,0 @@
-DB_HOST=127.0.0.1
-DB_USER=root
-DB_PASS=
-SENHA_MASTER=master
-DB_NAME=knexdb
-NODE_ENV=development 
-DB_SECRET=$2 anos$10$BVA5SHtKdSzr4L338Esv0eb5HdwcQ/yPGA0W2zHyfe3sufznhDv8K
-
-
