@@ -13,7 +13,6 @@ module.exports = {
     },
     usuarioID(_, { id }) {
         return UsuarioID(id)
-
     },
     usuarioNome(_, { nome }) {
         return UsuarioNome(nome)

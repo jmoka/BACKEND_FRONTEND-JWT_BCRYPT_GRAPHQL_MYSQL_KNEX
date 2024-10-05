@@ -1,7 +1,9 @@
 const { UsuarioEmail } = require("../../../Types/Usuarios/consultar/usuarioEmail");
 const Token = require("../../../../autenticacao/token");
 const AutenticarHash = require("../../../../autenticacao/hash");
-const dados = require("@data/dados")
+//const dados = require("@data/dados")
+
+
 async function loginUsuario(dados) {
     try {
         const { email, senha } = dados;
@@ -28,8 +30,6 @@ async function loginUsuario(dados) {
     }
 }
 
-async function Dados() {
-    return dados
-}
 
-module.exports = loginUsuario, Dados;
+
+module.exports = loginUsuario
