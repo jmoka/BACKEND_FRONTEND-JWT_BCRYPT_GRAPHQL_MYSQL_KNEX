@@ -7,7 +7,9 @@ const { alterarUsuario } = require("./mutation/atualizarUsuario_mutation")
 const { excluirUsuario } = require("./mutation/excluirUsuario_mutation")
 
 module.exports = {
-    novoUsuario(_, { user }) {
+    novoUsuario(_, { user }, ctx) {
+        // o usuario com perfil 
+
         return novoUsuario(user);
     },
 

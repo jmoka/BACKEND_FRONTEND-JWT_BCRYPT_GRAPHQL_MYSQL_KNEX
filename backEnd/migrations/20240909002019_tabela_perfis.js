@@ -8,17 +8,8 @@ exports.up = function (knex, Promise) {
             table.increments('id').primary();
             table.string('nome', 255).notNullable().unique();
             table.string('rotulo', 255).notNullable().unique();
-        }).then(function () {
-            const perfirMaster = knex("perfis").insert([
-                {
-                    nome: "mst",
-                    rotulo: "Master",
-
-                }
-            ])
-            return perfirMaster;
-
         })
+
 };
 
 /**

@@ -1,6 +1,3 @@
-O objetivo desse repositório é demostrar como se faz a criptografia de senhas e a autentição através da biblioteca "tokens JSON Web" e
-também o uso de um gerenciador de Hast com a biblioteca "Bcrypt"
-
 # Sistema esta Configurado para Produção
 
 - Dessa forma está bloqueado o Playground ara efetuar os testes
@@ -18,6 +15,16 @@ também o uso de um gerenciador de Hast com a biblioteca "Bcrypt"
 ## Modo Desenvolvimento
 
             NODE_ENV=development
+
+# ---------------
+
+## Introdução
+
+- Nesse modulo o objetivo é realizar a criptografia da senha
+
+        token jsonweb
+
+  - Altenticação do usuário, através da biblioteca "token jsonweb"
 
 ## Inicializar Usando o package.json
 
@@ -68,16 +75,6 @@ também o uso de um gerenciador de Hast com a biblioteca "Bcrypt"
 - Instala o yarn caso queira usar o comando yarn
 
         npm install -g yarn ( opcional)
-
-## Instalar
-
-## Instalação token jsonweb
-
-    npm install jsonwebtoken
-
-## Instalação bcrypt
-
-    npm install bcrypt
 
 ### Implantação do knex
 
