@@ -15,13 +15,15 @@ const master = {
     senha: "Master@123"
 }
 
+const inativo = {
+    email: "inativo@xxxx.com",
+    senha: "Inativo@123"
+}
 
 module.exports = async req => {
-
     const { token } = await loginUsuario(master)
     req.headers = {
         authorization: `Bearer ${token}`
-
     }
 
 

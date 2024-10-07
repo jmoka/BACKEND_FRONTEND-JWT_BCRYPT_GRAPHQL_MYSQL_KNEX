@@ -5,13 +5,7 @@ const validarNomeUsuarios = require("@data/validacoes/ValidarUsuarios/validarNom
 
 module.exports = {
     async excluirUsuario(filtro) {
-        const { id, nome, email } = filtro;
-
-       
-        if (id === 2 || id === 1 || nome === "master" || nome === "admin" || email === "master@master.com" || email === "admin@jota.com") {
-            console.log("Usuário não pode ser deletado");
-            throw new Error("Usuário não pode ser deletado");
-        }
+        const { id, nome, email } = filtro; 
 
         let usuarioEncontrado;
 

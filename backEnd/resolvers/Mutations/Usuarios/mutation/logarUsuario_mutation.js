@@ -5,31 +5,28 @@ const AutenticarHash = require("../../../../autenticacao/hash");
 
 
 async function loginUsuario(dados) {
+    const errSenhaEmail = new Error("Email ou senha não cadastrado!")
+    const erroInativo = new Error("Usuário Inativo")
+    const erroUsuario = new Error("Usuário não Definido")
+
     try {
         const { email, senha } = dados;
-
         // Buscar o usuário pelo email
         const usuarioEncontrado = await UsuarioEmail(email);
-
         // Verificar se o usuário está ativo
-        if (usuarioEncontrado.status !== "ATIVO") {
-            throw new Error("Usuário inativo.");
-        }
+        if (usuarioEncontrado.status !== "ATIVO") throw erroInativo;
         // Autenticar a senha
         const senhaValida = await AutenticarHash.autenticar(senha, usuarioEncontrado.senha);
-        if (!senhaValida) {
-            console.error(`Usuario com senha informado não está cadastrado!!`);
-            throw new Error("Senha incorreta.");
-        }
+        if (!senhaValida) throw errSenhaEmail;
         // Gerar o token JWT
         const tokenGerado = Token.gerarToken(usuarioEncontrado);
-        console.log("Usuário autenticado com sucesso");
+
         return tokenGerado;
-    } catch (error) {
-        throw new Error(error.message || "Erro ao logar usuário.");
+
+    } catch (e) {
+        vencimento
+        throw erroUsuario
     }
 }
-
-
 
 module.exports = loginUsuario

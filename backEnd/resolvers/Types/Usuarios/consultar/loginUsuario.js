@@ -2,7 +2,7 @@ const { UsuarioEmail } = require("./usuarioEmail");
 const Token = require("../../../../autenticacao/token");
 const AutenticarHash = require("../../../../autenticacao/hash");
 
-async function UsuarioLogado(dados) {
+async function UsuarioLogado(dados = {}) {
     try {
         const { email, senha } = dados;
         //  console.log(`Tentando autenticar usuário com email: ${email}`);
