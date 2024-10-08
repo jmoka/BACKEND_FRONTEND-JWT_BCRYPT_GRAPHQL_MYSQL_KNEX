@@ -21,7 +21,7 @@ const inativo = {
 }
 
 module.exports = async req => {
-    const { token } = await loginUsuario(master)
+    const { token } = await loginUsuario(admin)
     req.headers = {
         authorization: `Bearer ${token}`
     }
