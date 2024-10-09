@@ -1,84 +1,61 @@
 const db = require("@data/db");
 const validarEmail = require("@data/validacoes/ValidarUsuarios/validarEmail");
-const {Usuario_ID} =  require("../../../Types/Usuarios/consultar/usuarioID");
-const {criarHash} = require("../../../../autenticacao/hash")
+const { Usuario_ID } = require("../../../Types/Usuarios/consultar/usuarioID");
+const { criarHash } = require("../../../../autenticacao/hash");
 const perfilDefault = 3;
-const statuDefault = 'ATIVO'
+const statuDefault = 'ATIVO';
+const Token = require("../../../../autenticacao/token");
 
 module.exports = {
-    async novoUsuario(user) {
-                       
+    async novoUsuario(user, req) {
         try {
             // Verifica se o e-mail já está cadastrado
             const emailExistente = await validarEmail(user.email);
             if (emailExistente) {
-              //  console.log("Usuário já cadastrado com esse email");
-                throw new Error("Usuário já cadastrado com esse email = " + user.email);
+                throw new Error(`Usuário já cadastrado com esse email: ${user.email}`);
             }
-            // criando hash da senha
-                    
-            const senhaHash = await criarHash(user.senha)   
-                       
-            // Cria um novo usuário usando os atributos fornecidos em user
+
+            // Cria o hash da senha
+            const senhaHash = await criarHash(user.senha);
+
+            // Cria um novo objeto de usuário
             let UsuarioEnviado = {
                 nome: user.nome,
                 email: user.email,
                 senha: senhaHash,
-                perfil: user.perfil || 3, // Usa perfilDefault se não for fornecido          
-                status: user.status || ATIVO // Usa statuDefault se não for fornecido
+                perfil: user.perfil || perfilDefault, // Usa perfil padrão se não fornecido
+                status: user.status || statuDefault // Usa status padrão se não fornecido
             };
 
-            // insere o usuario
-            const usuarioInserido = await db('usuarios').insert(UsuarioEnviado)
-            // pega o id do usuario cadastrado
-            const idUsuario =  await Usuario_ID(...usuarioInserido)
-            // cria o obj de casdastro da tabela de relação usuaro perfil      
+            // Insere o usuário no banco de dados
+            const usuarioInserido = await db('usuarios').insert(UsuarioEnviado);
+
+
+            if (!usuarioInserido) throw new Error("Erro ao inserir usuario");
+
+            const usuario = await Usuario_ID(...usuarioInserido);
+
+            // Associa o perfil ao usuário na tabela de relacionamento
             let UsuarioPerfil = {
-                usuario_id : idUsuario.id,
-                perfil_id : user.perfil            }
+                usuario_id: usuario.id,
+                perfil_id: user.perfil || perfilDefault
+            };
+            await db("usuario-perfis").insert(UsuarioPerfil);
 
-            // Insere o o perfil associado ao usuario na tabela uaurio-perfis           
-            await db("usuario-perfis").insert(UsuarioPerfil)
-            
-            // retorna uario cadastrado
-            console.log(`Usuário com ID: ${idUsuario.id} e Nome: ${user.nome} cadastrado com exito!!`);
-            
-            return Usuario_ID(usuarioInserido) 
-            
-            }                    
-            
-         catch (error) {
-            throw new Error(`Erro ao criar usuário: ${ error.message } `);
+            console.log(`Usuário com ID: ${usuario.id} e Nome: ${user.nome} cadastrado com sucesso!`);
+
+
+            const token = Token.gerarToken(usuario);
+            if (!token) throw new Error("Token Invalido");
+
+            req.headers = {
+                authorization: `Bearer ${token}`
+            }
+            console.log(req.headers);
+
+            return Usuario_ID(usuarioInserido);
+        } catch (error) {
+            throw new Error(`Erro ao criar usuário: ${error.message}`);
         }
-}}
-                 
-          
-              
-
-
-// Consulta do Cliente
-
-// mutation{
-//     novoUsuario(
-//       user: {
-//         nome: "d",
-//         email: "df@xxx.com",
-//         senha: "12fddsds34d56",  
-//         perfil: 1,
-//         status: ATIVO
-//     }
-//     ) {
-//     id
-//       nome
-//       email   
-//       status
-//     	perfil{
-//         id
-// 				nome
-// 				rotulo
-//       }
-//     dataCriacao
-    
-     
-//       }
-//   }
+    }
+};

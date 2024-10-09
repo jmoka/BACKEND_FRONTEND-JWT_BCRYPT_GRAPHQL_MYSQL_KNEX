@@ -2,7 +2,7 @@ const { extrairDecoded } = require("./extrairContext")
 module.exports = async ({ req }) => {
 
     // simulando usuario logado
-    await require('./simularUsuarioLogado')(req)
+    //  await require('./simularUsuarioLogado')(req)
 
     // setando o authorization
     const auth = req.headers.authorization
@@ -34,25 +34,26 @@ module.exports = async ({ req }) => {
             // sem retorno 
             // porém se caiu akim é invalido 
             // sem retorno para continuar a aplicação
+            console.error("Erro ao extrair token:", error.message);
         }
     }
 
-    if (usuario && usuario.perfil.nome === "mast" || usuario.perfil.nome === "dev" || usuario.perfil.nome === "admin") {
-        perfilSetado = usuario.perfil.nome
-    }
-    const err = new Error("Acesso Negado")
+    // if (usuario && usuario.perfil.nome === "mast" || usuario.perfil.nome === "dev" || usuario.perfil.nome === "admin") {
+    //     perfilSetado = usuario.perfil.nome
+    // }
+    // const err = new Error("Acesso Negado")
 
 
     return {
         usuario,
         perfilSetado,
-        validarUsuario() {
-            if (!usuario) throw err
-        },
-        validarPerfil() {
-            if (!perfilSetado) throw err
+        // validarUsuario() {
+        //     if (!usuario) throw err
+        // },
+        // validarPerfil() {
+        //     if (!perfilSetado) throw err
 
-        }
+        // }
 
     }
 }

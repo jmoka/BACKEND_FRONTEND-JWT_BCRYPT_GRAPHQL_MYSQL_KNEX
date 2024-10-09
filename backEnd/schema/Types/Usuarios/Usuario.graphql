@@ -18,22 +18,21 @@ type UsuarioPerfil {
 scalar Date
 
 type Usuario {
-  id: Int
+  id: ID!
   nome: String!
   email: String!
-  senha: String!
-  perfil: Perfil
-  status: enumStatusUsuarios
-  dataCriacao: Date
+  perfil: Int
+  status: String
 }
 
 input UsuarioInput {
-  nome: String
-  email: String
-  senha: String
-  perfil: Int!
-  status: enumStatusUsuarios!
+  nome: String!
+  email: String!
+  senha: String!
+  perfil: Int
+  status: String
 }
+
 input FiltraUsuario {
   id: Int
   nome: String

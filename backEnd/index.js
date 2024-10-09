@@ -12,7 +12,7 @@ const schemaPath = './schema/index.graphql'
 const server = new ApolloServer({
     typeDefs: importSchema(schemaPath),
     resolvers,
-    context
+    context: ({ req }) => ({ req }),
 })
 
 CriarBaseDados();
