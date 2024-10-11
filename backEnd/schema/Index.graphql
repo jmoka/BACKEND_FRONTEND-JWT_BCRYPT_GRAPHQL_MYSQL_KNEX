@@ -1,4 +1,4 @@
 
-#import Usuario, Perfil from 'Types/Usuarios/Usuario.graphql'
+#import Usuario, Perfil, UsuarioPerfil from 'Types/Usuarios/Usuario.graphql'
 #import Query from 'Types/Usuarios/TypeUsuario.graphql'
 #import Mutation from 'Mutations/index.graphql'

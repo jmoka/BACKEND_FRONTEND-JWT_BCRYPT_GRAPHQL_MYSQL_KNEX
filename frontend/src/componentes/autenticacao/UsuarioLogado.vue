@@ -17,8 +17,7 @@
             <v-flex>
             </v-flex>
             <v-flex shrink>
-                <v-btn color="error"
-                    @click="setUsuario(null)">
+                <v-btn color="error" @click="setUsuario(null)">
                     Sair
                 </v-btn>
             </v-flex>
@@ -33,14 +32,14 @@ export default {
     computed: {
         ...mapGetters(['usuario']),
         perfis() {
-            if(!this.usuario && !this.usuario.perfis) return null
-            return this.usuario.perfis.map(p => p.nome).join(', ')
+            if (!this.usuario || !this.usuario.perfis) return ''; // Ensure that usuario and perfis are defined
+            return this.usuario.perfis.map(p => p.nome).join(', ');
         }
+
     },
+
     methods: mapActions(['setUsuario'])
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

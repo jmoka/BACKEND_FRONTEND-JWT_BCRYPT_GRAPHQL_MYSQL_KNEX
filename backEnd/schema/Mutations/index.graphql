@@ -8,5 +8,5 @@ type Mutation {
   novoPerfil(perfil: PerfilInput): Perfil
   excluirPerfil(filtro: FiltrarPerfil): Perfil
   alterarPerfil(perfil: PerfilInput, filtro: FiltrarPerfil!): Perfil
-  loginUsuario(dados: login): Usuario
+  loginUsuario(dados: login): UsuarioLogin
 }

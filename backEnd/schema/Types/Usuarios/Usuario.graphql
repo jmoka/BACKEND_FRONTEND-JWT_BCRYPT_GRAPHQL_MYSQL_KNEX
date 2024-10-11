@@ -1,22 +1,3 @@
-type Perfil {
-  id: Int
-  nome: String
-  rotulo: String
-}
-
-enum enumStatusUsuarios {
-  ATIVO
-  INATIVO
-  BLOQUEADO
-}
-
-type UsuarioPerfil {
-  usuario_id: Int
-  perfil_id: Int
-}
-
-scalar Date
-
 type Usuario {
   id: ID!
   nome: String!
@@ -25,12 +6,41 @@ type Usuario {
   status: String
 }
 
+type UsuarioLogin {
+  id: ID!
+  nome: String!
+  email: String!
+  perfil: Perfil!
+  status: String!
+  token: String
+}
+
+type Perfil {
+  id: Int
+  nome: String
+  rotulo: String
+}
+
+type UsuarioPerfil {
+  usuario_id: Int
+  perfil_id: Int
+}
+
+enum enumStatusUsuarios {
+  ATIVO
+  INATIVO
+  BLOQUEADO
+}
+
+scalar Date
+
 input UsuarioInput {
   nome: String!
   email: String!
   senha: String!
   perfil: Int
   status: String
+  token: String
 }
 
 input FiltraUsuario {

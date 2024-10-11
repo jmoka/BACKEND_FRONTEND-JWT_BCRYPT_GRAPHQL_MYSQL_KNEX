@@ -9,8 +9,8 @@ const { extrairObjDecoder } = require("@data/extrairContext")
 
 module.exports = {
 
-    novoUsuario(_, { user }, ctx) {
-        return novoUsuario(user, ctx);
+    novoUsuario(_, { user }, req) {
+        return novoUsuario(user, req);
     },
 
     alterarUsuario(_, { user, filtro }) {
@@ -22,7 +22,7 @@ module.exports = {
         return excluirUsuario(filtro)
     },
 
-    loginUsuario(_, { dados }, ctx) {
-        return loginUsuario(dados, ctx);
+    loginUsuario(_, { dados }, { req }) {
+        return loginUsuario(dados, req);
     }
 }

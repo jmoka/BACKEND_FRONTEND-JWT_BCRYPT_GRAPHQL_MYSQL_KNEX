@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        usuario: null,
+        usuario: {},
     },
     mutations: {
         setUsuario(state, usuario) {
@@ -14,11 +14,17 @@ export default new Vuex.Store({
     },
     getters: {
         usuario(state) {
-            return state.usuario
+            return [state.usuario]
         },
     },
     actions: {
         setUsuario({ commit }, usuario) {
+            if (usuario && usuario.token) {
+                localStorage.setItem('token', usuario.token)
+            } else {
+                localStorage.removeItem('token')
+            }
+
             commit('setUsuario', usuario)
         }
     }
