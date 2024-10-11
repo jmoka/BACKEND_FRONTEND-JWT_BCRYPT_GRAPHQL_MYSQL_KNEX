@@ -24,22 +24,27 @@
         </v-layout>
     </v-card>
 </template>
-
 <script>
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
     computed: {
-        ...mapGetters(['usuario']),
+        ...mapGetters(['usuario']), // Acessa o estado do usuário no Vuex
         perfis() {
-            if (!this.usuario || !this.usuario.perfis) return ''; // Ensure that usuario and perfis are defined
-            return this.usuario.perfis.map(p => p.nome).join(', ');
+            // Verificação e log para verificar a estrutura do usuário
+            console.log('Usuario:', this.usuario.perfil);
+
+            if (!this.usuario || !this.usuario.perfil) {
+                console.warn('Perfil não disponível'); // Log se o perfil não estiver disponível
+                return 'Nenhum perfil disponível'; // Retorna mensagem padrão se não houver perfil
+            }
+
+            // Se perfil for um objeto, retorna o nome do perfil
+            return this.usuario.perfil.nome || 'Perfil sem nome'; // Adapta para o caso do objeto
         }
-
     },
-
-    methods: mapActions(['setUsuario'])
+    methods: {
+        ...mapActions(['setUsuario']), // Ação para deslogar o usuário
+    }
 }
 </script>
-
-<style></style>

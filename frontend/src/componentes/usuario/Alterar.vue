@@ -8,32 +8,20 @@
                     <div v-if="erros">
                         <Erros :erros="erros" />
                     </div>
-                    <v-text-field label="ID"
-                        v-model.number="filtro.id" />
-                    <v-text-field label="E-mail"
-                        v-model="filtro.email" />
+                    <v-text-field label="ID" v-model.number="filtro.id" />
+                    <v-text-field label="E-mail" v-model="filtro.email" />
 
                     <h1 class="mt-4 headline">Alterar Usuário</h1>
                     <v-divider class="mb-3" />
-                    <v-text-field label="Nome"
-                        v-model="usuario.nome" />
-                    <v-text-field label="E-mail"
-                        v-model="usuario.email" />
-                    <v-text-field label="Senha"
-                        v-model="usuario.senha" type="password" />
-                    <v-select label="Perfis"
-                        v-model="usuario.perfis"
-                        :items="perfis"
-                        item-value="id"
-                        item-text="rotulo"
-                        attach multiple
-                        chips deletable-chips />
-                    <v-btn class="ml-0 mt-3"
-                        @click="obterPerfis">
+                    <v-text-field label="Nome" v-model="usuario.nome" />
+                    <v-text-field label="E-mail" v-model="usuario.email" />
+                    <v-text-field label="Senha" v-model="usuario.senha" type="password" />
+                    <v-select label="Perfis" v-model="usuario.perfis" :items="perfis" item-value="id" item-text="rotulo"
+                        attach multiple chips deletable-chips />
+                    <v-btn class="ml-0 mt-3" @click="obterPerfis">
                         Obter Perfis
                     </v-btn>
-                    <v-btn color="primary" class="ml-0 mt-3"
-                        @click="alterarUsuario">
+                    <v-btn color="primary" class="ml-0 mt-3" @click="alterarUsuario">
                         Alterar Usuário
                     </v-btn>
                 </v-layout>
@@ -43,14 +31,10 @@
                     <h1 class="headline">Resultado</h1>
                     <v-divider />
                     <template v-if="dados">
-                        <v-text-field label="ID" readonly
-                            v-model="dados.id" />
-                        <v-text-field label="Nome" readonly
-                            v-model="dados.nome" />
-                        <v-text-field label="E-mail" readonly
-                            v-model="dados.email" />
-                        <v-text-field label="Perfis" readonly
-                            :value="perfisRotulos" />
+                        <v-text-field label="ID" readonly v-model="dados.id" />
+                        <v-text-field label="Nome" readonly v-model="dados.nome" />
+                        <v-text-field label="E-mail" readonly v-model="dados.email" />
+                        <v-text-field label="Perfis" readonly :value="perfisRotulos" />
                     </template>
                 </v-layout>
             </v-flex>
@@ -78,7 +62,7 @@ export default {
                 this.dados.perfis.map(p => p.rotulo).join(', ')
         },
         perfisSelecionados() {
-            if(this.usuario.perfis) {
+            if (this.usuario.perfis) {
                 return this.usuario.perfis.map(id => ({ id }))
             } else {
                 return null
@@ -96,6 +80,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

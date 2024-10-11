@@ -9,11 +9,18 @@ const Token = require("../../../../autenticacao/token");
 module.exports = {
     async novoUsuario(user, req) {
         try {
+
+
             // Verifica se o e-mail já está cadastrado
             const emailExistente = await validarEmail(user.email);
+
+            // console.log(user.email);
+
             if (emailExistente) {
+                console.log(`Usuário já cadastrado com esse email: ${user.email}`);
                 throw new Error(`Usuário já cadastrado com esse email: ${user.email}`);
             }
+
 
             // Cria o hash da senha
             const senhaHash = await criarHash(user.senha);
@@ -23,9 +30,11 @@ module.exports = {
                 nome: user.nome,
                 email: user.email,
                 senha: senhaHash,
-                perfil: user.perfil || perfilDefault, // Usa perfil padrão se não fornecido
-                status: user.status || statuDefault // Usa status padrão se não fornecido
+                perfil: user.perfil || 3, // Verifica se é um inteiro
+                status: user.status || "ATIVO" // Usa status padrão se não fornecido
             };
+
+
 
             // Insere o usuário no banco de dados
             const usuarioInserido = await db('usuarios').insert(UsuarioEnviado);
@@ -34,6 +43,8 @@ module.exports = {
             if (!usuarioInserido) throw new Error("Erro ao inserir usuario");
 
             const usuario = await Usuario_ID(...usuarioInserido);
+
+
 
             // Associa o perfil ao usuário na tabela de relacionamento
             let UsuarioPerfil = {
@@ -51,9 +62,10 @@ module.exports = {
             req.headers = {
                 authorization: `Bearer ${token}`
             }
-            console.log(req.headers);
 
-            return Usuario_ID(usuarioInserido);
+            return usuario;
+
+
         } catch (error) {
             throw new Error(`Erro ao criar usuário: ${error.message}`);
         }

@@ -24,7 +24,8 @@
                         <v-text-field label="ID" readonly v-model="dados.id" />
                         <v-text-field label="Nome" readonly v-model="dados.nome" />
                         <v-text-field label="E-mail" readonly v-model="dados.email" />
-                        <v-text-field label="Perfis" readonly :value="perfis" />
+                        <v-text-field label="Perfis" readonly
+                            :value="dados.perfil ? dados.perfil.nome : 'Nenhum perfil'" />
                     </template>
                 </v-layout>
             </v-flex>
@@ -33,8 +34,8 @@
 </template>
 
 <script>
-import Erros from '../comum/Erros'
-import gql from 'graphql-tag'
+import Erros from '../comum/Erros';
+import gql from 'graphql-tag';
 
 export default {
     components: { Erros },
@@ -47,17 +48,10 @@ export default {
             },
             dados: null,
             erros: null
-        }
-    },
-    computed: {
-        perfis() {
-            return this.dados && this.dados.perfis &&
-                this.dados.perfis.map(p => p.nome).join(',')
-        }
+        };
     },
     methods: {
         registrar() {
-            console.log('Registrando usuário:', this.usuario); // Log dos dados
             this.$api
                 .mutate({
                     mutation: gql`
@@ -66,7 +60,10 @@ export default {
                                 id
                                 nome
                                 email
-                             
+                                status 
+                                perfil { 
+                                    nome 
+                                }            
                             }
                         }
                     `,
@@ -84,13 +81,11 @@ export default {
                 })
                 .catch(e => {
                     console.error('Erro ao registrar usuário:', e); // Log do erro
-                    this.erros = e.graphQLErrors ? e.graphQLErrors.map(err => ({ message: err.message })) : [{ message: e.message }];
+                    this.erros = e.graphQLErrors
+                        ? e.graphQLErrors.map(err => ({ message: err.message }))
+                        : [{ message: e.message }];
                 });
         }
     }
-}
+};
 </script>
-
-<style scoped>
-/* Adicione qualquer estilo necessário aqui */
-</style>
