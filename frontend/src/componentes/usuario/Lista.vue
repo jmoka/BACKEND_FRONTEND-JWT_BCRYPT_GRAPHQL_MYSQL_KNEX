@@ -17,9 +17,8 @@
                         <td>{{ props.item.id }}</td>
                         <td>{{ props.item.nome }}</td>
                         <td>{{ props.item.email }}</td>
-                        <td>{{ props.item.perfis
-                            .map(p => p.nome)
-                            .join(', ') }}</td>
+                        <td>{{ props.item.status }}</td>
+                        <td>{{ perfil }}</td>
                     </template>
                 </v-data-table>
             </v-flex>
@@ -29,6 +28,7 @@
 
 <script>
 import Erros from '../comum/Erros'
+import gql from 'graphql-tag'
 
 
 export default {
@@ -36,18 +36,44 @@ export default {
     data() {
         return {
             erros: null,
+            perfil: null,
             usuarios: [],
             headers: [
                 { text: 'ID', value: 'id' },
-                { text: 'Nome', value: 'name' },
+                { text: 'Nome', value: 'nome' },
                 { text: 'E-mail', value: 'email' },
-                { text: 'Perfis', value: 'perfis' },
+                { text: 'Estatus', value: 'status' },
+                { text: 'Perfis', value: 'perfil' },
             ],
         }
     },
     methods: {
         obterUsuarios() {
-            console.log(this.$api.query);
+            console.log("obter user");
+            this.$api.query({
+                query: gql`
+      query {
+        usuarios {
+          id
+          nome
+          email
+          status
+          perfil { nome rotulo }
+        }
+      }
+    `,
+            }).then(resultado => {
+                //    console.log(resultado.data.usuarios); // Verifique o que está sendo retornado aqui
+                this.usuarios = resultado.data.usuarios;
+                this.usuarios.forEach(usuario => {
+                    this.perfil = usuario.perfil.nome // Acessa o nome do perfil de cada usuário
+                });
+
+                this.erros = null;
+            }).catch(e => {
+                this.usuarios = [];
+                this.erros = e.message || "Erro ao obter usuários";
+            });
         }
     }
 }
