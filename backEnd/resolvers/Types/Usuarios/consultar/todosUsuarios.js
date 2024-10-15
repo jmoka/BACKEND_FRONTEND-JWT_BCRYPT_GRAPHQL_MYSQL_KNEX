@@ -29,7 +29,10 @@ async function TodosUsuarios() {
                 rotulo: usuario.perfil_rotulo
             }
         }));
-        // console.log(...resultado);
+             
+       // console.log(resultado);
+        
+
         return resultado;
     } catch (error) {
         return new Error("Não foi possível retornar nenhum usuário");

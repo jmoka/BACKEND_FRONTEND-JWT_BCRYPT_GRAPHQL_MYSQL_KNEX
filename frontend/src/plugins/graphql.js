@@ -9,7 +9,7 @@ import { setContext } from "apollo-link-context"; // Importação nomeada
 
 // Monta a instância do Vue com o ApolloProvider
 const httpLink = createHttpLink({
-    uri: 'http://localhost:4000', // URL do servidor GraphQL
+    uri: 'http://localhost:4001', // URL do servidor GraphQL
 });
 
 // Apollo Link para adicionar o header de autenticação

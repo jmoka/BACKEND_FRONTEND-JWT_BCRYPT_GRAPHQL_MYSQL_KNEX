@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 
 // É altamente recomendável armazenar o segredo em uma variável de ambiente
 const SEGREDO_JWT = process.env.DB_SECRET  // Substitua pelo seu segredo real e mantenha-o seguro
+
+
 const err = new Error("Token inválido ou expirado")
 const Token = {
     // Função para gerar o token JWT
@@ -23,7 +25,7 @@ const Token = {
 
         // Assinar o token com o segredo do servidor, NÃO com a senha do usuário
         const token = jwt.sign(payload, SEGREDO_JWT);
-
+        
 
         return {
             ...payload,

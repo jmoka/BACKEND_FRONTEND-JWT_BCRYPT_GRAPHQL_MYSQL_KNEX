@@ -26,7 +26,10 @@ export default {
 
             if (itens.length === 0) {
                 itens.push({
-                    message: 'Erro! Preencheu o formulário?'
+                      msg:"Usuário Inativo",
+                    message: 'Erro! Preencheu o formulário?',
+                  
+
                 })
             }
 

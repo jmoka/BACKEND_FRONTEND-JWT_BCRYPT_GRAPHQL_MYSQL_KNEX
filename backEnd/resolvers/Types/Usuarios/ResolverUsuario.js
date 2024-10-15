@@ -5,10 +5,12 @@ const TodosUsuarios = require("./consultar/todosUsuarios.js")
 const UsuarioNome = require("./consultar/usuarioNome.js")
 const { UsuarioID } = require("./consultar/usuarioID.js")
 const UsuarioLogado = require("./consultar/loginUsuario.js")
+const UsuarioEmail = require("./consultar/usuarioEmail.js")
 
 
 module.exports = {
     usuarios() {
+             
         return TodosUsuarios();
     },
     usuarioID(_, { id }) {
@@ -16,6 +18,10 @@ module.exports = {
     },
     usuarioNome(_, { nome }) {
         return UsuarioNome(nome)
+    },
+
+    usuarioEmail(_, { email }) {
+        return UsuarioEmail(email)
     },
 
     UsuarioLogado(_, { dados }) {

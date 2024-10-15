@@ -9,27 +9,27 @@ exports.seed = async function (knex) {
 
     // criar hash para inserir a senha do perfil master
 
-    const admin = await criarHash(process.env.DB_ADMIN);
-    const master = await criarHash(process.env.DB_MASTER) // resolve a promese
-    const dev = await criarHash(process.env.DB_DEV) // resolve a promese
+    const admin = await criarHash("Admin@123");
+    const master = await criarHash("Master@123") // resolve a promese
+    const dev = await criarHash("Dev@123") // resolve a promese
 
     await knex('usuarios').insert([
         {
-            nome: "master",
+            nome: "UserMaster",
             email: 'master@jotaempresa.com',
             senha: master,
             perfil: 1,
             status: "ATIVO"
         },
         {
-            nome: "dev",
+            nome: "UserDev",
             email: 'dev@jotaempresas.com',
             senha: dev,
             perfil: 2,
             status: "ATIVO"
         },
         {
-            nome: "admin",
+            nome: "UserAdmin",
             email: "admin@jotaempresas.com",
             senha: admin,
             perfil: 3,

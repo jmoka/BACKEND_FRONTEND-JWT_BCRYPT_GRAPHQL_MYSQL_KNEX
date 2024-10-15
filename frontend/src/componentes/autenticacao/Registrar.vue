@@ -52,6 +52,8 @@ export default {
     },
     methods: {
         registrar() {
+            console.log("registrar");
+            
             this.$api
                 .mutate({
                     mutation: gql`

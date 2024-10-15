@@ -27,6 +27,7 @@ module.exports = async ({ req }) => {
             // verificandoa validade do token
             if (validadeToken > agora) {
                 usuario = conteudoToken
+                
             }
 
 

@@ -17,7 +17,7 @@
             <v-flex>
             </v-flex>
             <v-flex shrink>
-                <v-btn color="error" @click="setUsuario(null)">
+                <v-btn color="error" @click="this.sair">
                     Sair
                 </v-btn>
             </v-flex>
@@ -26,6 +26,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+
 
 export default {
     computed: {
@@ -45,6 +46,12 @@ export default {
     },
     methods: {
         ...mapActions(['setUsuario']), // Ação para deslogar o usuário
+        sair() {
+        localStorage.removeItem('token'); // Remove o token do localStorage
+        this.setUsuario(null); // Reseta o estado do usuário no Vuex
+        window.location.reload(); // Atualiza a página
+    }
+       
     }
 }
 </script>

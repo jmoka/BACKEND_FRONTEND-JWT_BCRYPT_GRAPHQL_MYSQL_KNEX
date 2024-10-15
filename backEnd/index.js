@@ -16,7 +16,7 @@ const server = new ApolloServer({
 })
 
 CriarBaseDados();
-server.listen().then(({ url }) => {
+server.listen({ port: 4001 }).then(({ url }) => {
     console.log(`Executando em ${url}`)
 })
 

@@ -18,6 +18,7 @@ export default new Vuex.Store({
     },
     actions: {
         setUsuario({ commit }, usuario) {
+            
             commit('SET_USUARIO', usuario);
         },
         login({ commit }, usuario) {

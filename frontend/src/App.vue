@@ -21,7 +21,9 @@ export default {
   name: 'App',
   components: { Conteudo },
   methods: mapActions(['setUsuario']),
-  created() {
+  mounted() {
+    // Limpar o localStorage quando a página for carregada
+    localStorage.removeItem('token');
     this.setUsuario(null)
   }
 }

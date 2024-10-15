@@ -41,7 +41,7 @@ async function UsuarioEmail(email) {
     }
 }
 
-module.exports = { UsuarioEmail };
+module.exports =  {UsuarioEmail} ;
 
 
 

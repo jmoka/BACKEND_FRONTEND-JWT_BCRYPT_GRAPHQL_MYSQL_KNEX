@@ -23,8 +23,9 @@
                         <v-text-field label="ID" readonly v-model="dados.id" />
                         <v-text-field label="Nome" readonly v-model="dados.nome" />
                         <v-text-field label="E-mail" readonly v-model="dados.email" />
+                        <v-text-field label="E-mail" readonly v-model="dados.status" />
                         <v-text-field label="Token" readonly v-model="dados.token" />
-                        <v-text-field label="Perfis" readonly v-model="perfis" />
+                        <v-text-field label="Perfis" readonly v-model="dados.perfil.rotulo" />
                     </template>
                 </v-layout>
             </v-flex>
@@ -68,28 +69,47 @@ export default {
                             id
                             nome
                             email
-                            token
+                            status                                                  
                             perfil {
                                 nome
+                                rotulo
                             }
+                            token   
                         }
                     }`,
                     variables: {
                         email: this.usuario.email,
                         senha: this.usuario.senha,
+                       
+                        
                     }
+                    
                 })
-                .then(resultado => {
-                    this.dados = resultado.data.loginUsuario; // Captura os dados retornados, incluindo perfis
-                    this.usuario = {}; // Limpa os campos de login
-                    this.erros = null; // Limpa os erros
-                    this.setUsuario(this.dados); // Armazena os dados do usuário no Vuex
+                .then(resultado => {                    
+                                                  
+                     if(resultado.data.loginUsuario.status !== "ATIVO" )
+                    {
+                        alert("Usuário está INATIVO, entre em contato com Admin do sistema!")
+                        this.usuario = {}; // Limpa os campos de login
+                                          
+                    }else{
+                        this.dados = resultado.data.loginUsuario; // Captura os dados retornados, incluindo perfis
+                        console.log("dados  --- > "+this.dados);
+                        localStorage.setItem("token", this.dados.token)
+                        this.usuario = {}; // Limpa os campos de login
+                        this.erros = null; // Limpa os erros
+                        this.setUsuario(this.dados); // Armazena os dados do usuário no Vuex
+                   }
+                    
+                   
                 })
-                .catch(e => {
-                    console.error('Erro ao Logar o usuário:', e); // Log do erro
-                    this.erros = e.graphQLErrors
-                        ? e.graphQLErrors.map(err => ({ message: err.message }))
-                        : [{ message: e.message }];
+                .catch(e=> {
+                    alert("Usuário ou Senha Incorreto!, verifique e tetnte novamente!")
+                    console.log(e);
+                    this.usuario={}
+                   
+                    
+                    
                 });
         }
     }
