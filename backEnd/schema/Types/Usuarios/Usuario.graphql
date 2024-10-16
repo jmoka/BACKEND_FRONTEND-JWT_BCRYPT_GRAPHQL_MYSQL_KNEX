@@ -4,6 +4,7 @@ type Usuario {
   email: String!
   perfil: Perfil
   status: String
+   dataCriacao: Date
 }
 
 type UsuarioLogin {

@@ -1,7 +1,7 @@
 const db = require("@data/db");
 const { format } = require("date-fns");
 
-async function UsuarioEmail(email) {
+async function UsuarioEmailConsulta(email) {
 
     try {
         const usuarioEmail = await db("usuarios")
@@ -41,7 +41,7 @@ async function UsuarioEmail(email) {
     }
 }
 
-module.exports =  {UsuarioEmail}, UsuarioEmail ;
+module.exports =  UsuarioEmailConsulta ;
 
 
 
@@ -49,7 +49,7 @@ module.exports =  {UsuarioEmail}, UsuarioEmail ;
 // consultar por nome usuario
 
 // query{
-//     usuario_Nome(nome:"dddddsddiddddd"){
+//     usuarioEmailConsulta(nome:"dddddsddiddddd"){
 //       id
 //       nome
 //       email

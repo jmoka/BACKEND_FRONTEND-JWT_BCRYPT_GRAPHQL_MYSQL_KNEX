@@ -2,7 +2,8 @@ type Query {
   usuarios: [Usuario]
   usuarioID(id: Int): Usuario
   usuarioNome(nome: String): Usuario
-  usuarioEmail(Email: String): Usuario
+  usuarioEmail(email: String): Usuario
+  usuarioEmailConsulta(email: String): Usuario
   perfis: [Perfil]
   perfilID(id: Int): Perfil
   perfilNome(nome: String): Perfil
