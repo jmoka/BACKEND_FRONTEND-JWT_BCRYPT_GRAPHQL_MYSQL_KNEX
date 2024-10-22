@@ -6,13 +6,23 @@
                     <h1 class="headline">Novo Usuário</h1>
                     <v-divider class="mb-3" />
                     <div v-if="erros">
-                        <Erros :erros="erros" />
+                        <v-alert :value="true" type="error">
+                            {{ msg }}
+                        </v-alert>
                     </div>
-                    <v-text-field label="Nome" v-model="usuario.nome" />
-                    <v-text-field label="E-mail" v-model="usuario.email" />
-                    <v-text-field label="Senha" v-model="usuario.senha" type="password" />
-                    <v-select label="Perfis" v-model="usuario.perfis" :items="perfis" item-value="id" item-text="rotulo"
-                        multiple chips deletable-chips />
+                    <v-text-field label="*Nome" v-model="usuario.nome" />
+                    <v-text-field label="*E-mail" v-model="usuario.email" />
+                    <v-text-field label="*Senha" v-model="usuario.senha" type="password" />
+                    
+                    <!-- v-select que exibe o 'rotulo' e armazena o 'id' -->
+                    <v-select
+                        label="Perfis"
+                        v-model="usuario.perfil"
+                        :items="perfis"
+                        item-value="id"
+                        item-text="rotulo"
+                    />
+                    
                     <v-btn class="ml-0 mt-3" @click="obterPerfis">
                         Obter Perfis
                     </v-btn>
@@ -26,10 +36,11 @@
                     <h1 class="headline">Resultado</h1>
                     <v-divider />
                     <template v-if="dados">
-                        <v-text-field label="ID" readonly v-model="dados.id" />
-                        <v-text-field label="Nome" readonly v-model="dados.nome" />
-                        <v-text-field label="Email" readonly v-model="dados.email" />
-                        <v-text-field label="Perfis" readonly :value="perfisRotulos" />
+                        <v-text-field label="*ID" readonly v-model="dados.id" />
+                        <v-text-field label="*Nome" readonly v-model="dados.nome" />
+                        <v-text-field label="*Email" readonly v-model="dados.email" />
+                        <v-text-field label="Status" readonly v-model="dados.status" />
+                        <v-text-field label="Perfis" readonly v-model="dados.perfil.rotulo" />
                         <v-text-field label="Data de Criação" readonly v-model="dados.dataCriacao" />
                     </template>
                 </v-layout>
@@ -39,131 +50,170 @@
 </template>
 
 <script>
-import Erros from '../comum/Erros'
 import gql from 'graphql-tag'
+const jwt = require("jsonwebtoken");
 
 export default {
-    components: { Erros },
-    data() {
+       data() {
         return {
             usuario: {
                 nome: '',
                 email: '',
                 senha: '',
-                perfis: []
+                perfil: null  // ID do perfil selecionado
             },
             perfis: [],
             dados: null,
-            erros: null
-        }
-    },
-    computed: {
-        perfisRotulos() {
-            return this.dados && this.dados.perfis &&
-                this.dados.perfis.map(p => p.rotulo).join(', ');
-        },
-        perfisSelecionados() {
-            if (this.usuario.perfis && this.usuario.perfis.length > 0) {
-                return this.usuario.perfis;
-            } else {
-                return [];
-            }
+            erros: false,
+            msg:""
         }
     },
     methods: {
-        async novoUsuario() {
-            // Resetar erros e dados
-            this.erros = null;
-            this.dados = null;
+    validarCamposObrigatorios() {
+      
 
-            // Validar campos obrigatórios
-            if (!this.usuario.nome || !this.usuario.email || !this.usuario.senha || this.usuario.perfis.length === 0) {
-                this.erros = ["Todos os campos são obrigatórios."];
-                return;
+        if (!this.usuario.nome) {
+            this.erros = true
+             this.msg= "Nome é obrigatório." 
+            throw new Error( "Nome é obrigatório.");
+            
+        }
+
+        if (!this.usuario.email) {
+            this.erros = true
+            this.msg= "Email é obrigatório." 
+            throw new Error( "Email é obrigatório." );
+            
+          
+        }
+
+        if (!this.usuario.senha) {
+            this.erros = true
+            this.msg= "Senha é obrigatória."
+            throw new Error("Senha é obrigatória.");
+            
+           
+        }
+
+        this.token = localStorage.getItem("token");
+        if (this.token !== null) {
+          try {
+            this.decode = jwt.decode(this.token);  // Decodifica sem verificar
+            console.log("Token Decodificado:", this.decode);
+            if(this.decode.status !== "ATIVO")throw new Error("Não Ativo");
+            if(this.decode.perfil.nome !== "admin" && this.decode.perfil.nome !== "mast" ){
+                this.erros = true
+                this.msg = "Perfil não Autorizado"   
+                throw new Error("Perfil não Autorizado");
             }
+                     
+         
+        
+            
+          } catch (error) {
+            throw new Error ("Erro ao decodificar o token:", error);
+          }
+        } else {
+            alert("Usuário não Logado! , Faça o login e tente novamente")             
+      
+            this.erros = true
+            this.msg = "Usuário não Logado! , Faça o login e tente novamente"   
+            throw new Error("Usuário não Logado! , Faça o login e tente novamente");
+        //     console.log( this.msg);
+        //     throw new Error(  this.msg  )
+                 
+       
+        }
 
-            // Preparar os dados do usuário a partir do formulário
-            const userInput = {
-                nome: this.usuario.nome,
-                email: this.usuario.email,
-                senha: this.usuario.senha,
-                perfis: this.perfisSelecionados, // Lista de IDs de perfis
-                status: "ATIVO" // Supondo que seja uma string
-            };
+       
+    },
 
-            try {
-                const resultado = await this.$api.mutate({
-                    mutation: gql`
-                        mutation NovoUsuario($user: UserInput!) {
-                            novoUsuario(user: $user) {
-                                id
-                                nome
-                                email
-                                status
-                                perfis {
-                                    id
-                                    nome
-                                    rotulo
-                                }
-                                dataCriacao
-                            }
-                        }
-                    `,
-                    variables: {
-                        user: userInput
-                    }
-                });
+    async novoUsuario() {
+        this.erros = null;
+        this.dados = null;
 
-                // Armazenar os dados retornados para exibição
-                this.dados = resultado.data.novoUsuario;
-                console.log("Usuário criado:", this.dados);
+        // Valida os campos obrigatórios
+        const errosDeValidacao = this.validarCamposObrigatorios();
+        if (errosDeValidacao) {
+            this.erros = { graphQLErrors: errosDeValidacao };
+           throw new Error(this.erros);
+           
+        }
 
-                // Limpar o formulário após criação bem-sucedida
-                this.usuario = {
-                    nome: '',
-                    email: '',
-                    senha: '',
-                    perfis: []
-                };
-            } catch (error) {
-                console.error("Erro ao criar usuário:", error);
-                // Extrair e armazenar erros, se disponível
-                if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-                    this.erros = error.graphQLErrors.map(err => err.message);
-                } else if (error.networkError) {
-                    this.erros = ["Erro de rede. Tente novamente mais tarde."];
-                } else {
-                    this.erros = ["Ocorreu um erro ao criar o usuário."];
-                }
-            }
-        },
+        const userInput = {
+            nome: this.usuario.nome,
+            email: this.usuario.email,
+            senha: this.usuario.senha,
+            perfil: this.usuario.perfil,  // ID do perfil selecionado
+            status: "Ativo"
+        };
 
-        async obterPerfis() {
-            try {
-                const resultado = await this.$api.query({
-                    query: gql`
-                        query {
-                            perfis {
+        try {
+            const resultado = await this.$api.mutate({
+                mutation: gql`
+                    mutation novoUsuario($user: UsuarioInput!) {
+                        novoUsuario(user: $user) {
+                            id
+                            nome
+                            email
+                            status
+                            perfil {
                                 id
                                 rotulo
                             }
+                            dataCriacao
                         }
-                    `
-                });
-                this.perfis = resultado.data.perfis;
-            } catch (error) {
-                console.error("Erro ao obter perfis:", error);
-                this.erros = ["Ocorreu um erro ao obter os perfis."];
-            }
+                    }
+                `,
+                variables: {
+                    user: userInput
+                }
+            }) .then(resultado => {
+                this.usuarios = resultado.data.usuarios;
+                this.erros = null;
+                  this.dados = resultado.data.novoUsuario;
+
+            this.usuario = {
+                nome: '',
+                email: '',
+                senha: '',
+                perfil: null
+            };
+     
+      })
+          
+        } catch (errors) {
+            
+            this.erros = true
+           const msgExtraida = errors.message.split("Erro ao criar usuário: ")[1]; 
+           this.msg = msgExtraida
+            console.log( this.msg );            
+            throw new Error(this.erros);
+        
+          
         }
     },
-    created() {
-        // Carregar os perfis quando o componente é criado
-        this.obterPerfis();
+
+    async obterPerfis() {
+        try {
+            const resultado = await this.$api.query({
+                query: gql`
+                    query {
+                        perfis {
+                            id
+                            rotulo
+                        }
+                    }
+                `
+            });
+            this.perfis = resultado.data.perfis; // Armazenando todos os perfis corretamente
+        } catch (error) {       
+            this.erros = true
+            this.msg= "Perfil não encontrado"
+            throw new Error(this.erros);
+        }
     }
 }
-</script>
 
-<style scoped>
-/* Adicione estilos conforme necessário */
-</style>
+    }
+</script>

@@ -3,7 +3,6 @@ const validarEmail = require("@data/validacoes/ValidarUsuarios/validarEmail");
 const { Usuario_ID } = require("../../../Types/Usuarios/consultar/usuarioID");
 const { criarHash } = require("../../../../autenticacao/hash");
 const perfilDefault = 3;
-const statuDefault = 'ATIVO';
 const Token = require("../../../../autenticacao/token");
 
 module.exports = {
@@ -30,7 +29,7 @@ module.exports = {
                 nome: user.nome,
                 email: user.email,
                 senha: senhaHash,
-                perfil: user.perfil || 3, // Verifica se é um inteiro
+                perfil: user.perfil || 4, // Verifica se é um inteiro
                 status: user.status || "ATIVO" // Usa status padrão se não fornecido
             };
 
@@ -51,7 +50,7 @@ module.exports = {
                 usuario_id: usuario.id,
                 perfil_id: user.perfil || perfilDefault
             };
-            await db("usuario-perfis").insert(UsuarioPerfil);
+            await db("usuarioPerfis").insert(UsuarioPerfil);
 
             console.log(`Usuário com ID: ${usuario.id} e Nome: ${user.nome} cadastrado com sucesso!`);
 
