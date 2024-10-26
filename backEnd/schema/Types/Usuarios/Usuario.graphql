@@ -44,6 +44,14 @@ input UsuarioInput {
   token: String
 }
 
+input AlterarUsuario{
+  nome: String
+  email: String
+  perfil: Int
+  status: String
+  
+}
+
 input FiltraUsuario {
   id: Int
   nome: String

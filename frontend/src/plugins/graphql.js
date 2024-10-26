@@ -35,4 +35,4 @@ const apolloClient = new ApolloClient({
 Vue.prototype.$api = apolloClient;
 
 // Exporta a instância do Apollo Client
-//export default apolloClient;
+export default apolloClient;

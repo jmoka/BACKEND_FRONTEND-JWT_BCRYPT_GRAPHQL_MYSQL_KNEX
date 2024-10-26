@@ -3,7 +3,7 @@
 type Mutation {
   novoUsuario(user: UsuarioInput!): Usuario
   excluirUsuario(filtro: FiltraUsuario!): Usuario
-  alterarUsuario(user: UsuarioInput, filtro: FiltraUsuario!): Usuario
+  alterarUsuario(user: AlterarUsuario, filtro: FiltraUsuario!): Usuario
   novoPerfil(perfil: PerfilInput): Perfil
   excluirPerfil(filtro: FiltrarPerfil): Perfil
   alterarPerfil(perfil: PerfilInput, filtro: FiltrarPerfil!): Perfil

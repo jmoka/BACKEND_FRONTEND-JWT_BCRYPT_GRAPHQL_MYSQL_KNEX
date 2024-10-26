@@ -1,7 +1,7 @@
 const db = require("@data/db")
 module.exports = {
     async alterarUsuario( user, filtro) {
-        const { id, nome, email } = filtro
+        const { id } = filtro
        
         let usuarioEncontrado;
         const atualizacoes = {
@@ -17,6 +17,14 @@ module.exports = {
                     .update(atualizacoes)
                 usuarioEncontrado = await db("usuarios")
                     .where({ id }).first();
+                    if (!usuarioEncontrado) {
+                        throw new Error("Usuário não encontrado.");
+                    }
+
+                    await db("usuarios").where({ id }).update(atualizacoes);
+                usuarioEncontrado = await db("usuarios").where({ id }).first();
+
+
                 const perfil = await db("perfis").where({ id: usuarioEncontrado.perfil }).first()
                 const retorno = {
                     id: usuarioEncontrado.id,

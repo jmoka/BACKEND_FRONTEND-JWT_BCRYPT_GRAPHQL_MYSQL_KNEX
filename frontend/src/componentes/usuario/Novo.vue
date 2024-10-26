@@ -69,130 +69,102 @@ export default {
         }
     },
     methods: {
-    validarCamposObrigatorios() {
-      
+        validarCamposObrigatorios() {
+    if (!this.usuario.nome) {
+        this.erros = true;
+        this.msg = "Nome é obrigatório.";
+        return false;
+    }
+    if (!this.usuario.email) {
+        this.erros = true;
+        this.msg = "Email é obrigatório.";
+        return false;
+    }
+    if (!this.usuario.senha) {
+        this.erros = true;
+        this.msg = "Senha é obrigatória.";
+        return false;
+    }
 
-        if (!this.usuario.nome) {
-            this.erros = true
-             this.msg= "Nome é obrigatório." 
-            throw new Error( "Nome é obrigatório.");
-            
-        }
-
-        if (!this.usuario.email) {
-            this.erros = true
-            this.msg= "Email é obrigatório." 
-            throw new Error( "Email é obrigatório." );
-            
-          
-        }
-
-        if (!this.usuario.senha) {
-            this.erros = true
-            this.msg= "Senha é obrigatória."
-            throw new Error("Senha é obrigatória.");
-            
-           
-        }
-
-        this.token = localStorage.getItem("token");
-        if (this.token !== null) {
-          try {
-            this.decode = jwt.decode(this.token);  // Decodifica sem verificar
-            console.log("Token Decodificado:", this.decode);
-            if(this.decode.status !== "ATIVO")throw new Error("Não Ativo");
-            if(this.decode.perfil.nome !== "admin" && this.decode.perfil.nome !== "mast" ){
-                this.erros = true
-                this.msg = "Perfil não Autorizado"   
-                throw new Error("Perfil não Autorizado");
+    this.token = localStorage.getItem("token");
+    if (this.token !== null) {
+        try {
+            this.decode = jwt.decode(this.token);
+            if (this.decode.status !== "ATIVO") {
+                this.erros = true;
+                this.msg = "Usuário não está ativo.";
+                return false;
             }
-                     
-         
-        
-            
-          } catch (error) {
-            throw new Error ("Erro ao decodificar o token:", error);
-          }
-        } else {
-            alert("Usuário não Logado! , Faça o login e tente novamente")             
-      
-            this.erros = true
-            this.msg = "Usuário não Logado! , Faça o login e tente novamente"   
-            throw new Error("Usuário não Logado! , Faça o login e tente novamente");
-        //     console.log( this.msg);
-        //     throw new Error(  this.msg  )
-                 
-       
+            if (this.decode.perfil.nome !== "admin" && this.decode.perfil.nome !== "mast") {
+                this.erros = true;
+                this.msg = "Perfil não autorizado.";
+                return false;
+            }
+        } catch (error) {
+            this.erros = true;
+            this.msg = "Erro ao decodificar o token.";
+            return false;
         }
+    } else {
+        this.erros = true;
+        this.msg = "Usuário não logado! Faça o login e tente novamente.";
+        return false;
+    }
+    return true;
+},
 
-       
-    },
+async novoUsuario() {
+    this.erros = false;
+    this.dados = null;
 
-    async novoUsuario() {
-        this.erros = null;
-        this.dados = null;
+    if (!this.validarCamposObrigatorios()) {
+        return;
+    }
 
-        // Valida os campos obrigatórios
-        const errosDeValidacao = this.validarCamposObrigatorios();
-        if (errosDeValidacao) {
-            this.erros = { graphQLErrors: errosDeValidacao };
-           throw new Error(this.erros);
-           
-        }
+    const userInput = {
+        nome: this.usuario.nome,
+        email: this.usuario.email,
+        senha: this.usuario.senha,
+        perfil: this.usuario.perfil,
+        status: "Ativo"
+    };
 
-        const userInput = {
-            nome: this.usuario.nome,
-            email: this.usuario.email,
-            senha: this.usuario.senha,
-            perfil: this.usuario.perfil,  // ID do perfil selecionado
-            status: "Ativo"
+    try {
+        const resultado = await this.$api.mutate({
+            mutation: gql`
+                mutation novoUsuario($user: UsuarioInput!) {
+                    novoUsuario(user: $user) {
+                        id
+                        nome
+                        email
+                        status
+                        perfil {
+                            id
+                            rotulo
+                        }
+                        dataCriacao
+                    }
+                }
+            `,
+            variables: {
+                user: userInput
+            }
+        });
+
+        this.dados = resultado.data.novoUsuario;
+        this.usuario = {
+            nome: '',
+            email: '',
+            senha: '',
+            perfil: null
         };
 
-        try {
-            const resultado = await this.$api.mutate({
-                mutation: gql`
-                    mutation novoUsuario($user: UsuarioInput!) {
-                        novoUsuario(user: $user) {
-                            id
-                            nome
-                            email
-                            status
-                            perfil {
-                                id
-                                rotulo
-                            }
-                            dataCriacao
-                        }
-                    }
-                `,
-                variables: {
-                    user: userInput
-                }
-            }) .then(resultado => {
-                this.usuarios = resultado.data.usuarios;
-                this.erros = null;
-                  this.dados = resultado.data.novoUsuario;
-
-            this.usuario = {
-                nome: '',
-                email: '',
-                senha: '',
-                perfil: null
-            };
-     
-      })
-          
-        } catch (errors) {
-            
-            this.erros = true
-           const msgExtraida = errors.message.split("Erro ao criar usuário: ")[1]; 
-           this.msg = msgExtraida
-            console.log( this.msg );            
-            throw new Error(this.erros);
-        
-          
-        }
-    },
+    } catch (error) {
+        this.erros = true;
+        this.msg = error.message;
+    }
+}
+,
 
     async obterPerfis() {
         try {
