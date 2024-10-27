@@ -133,6 +133,14 @@ export default {
 
     console.log("Resultado da mutação:", resultado);
     this.msg = "Usuário alterado com sucesso!";
+    alert("Usuário alterado com sucesso!")
+    this.idInserido=null,
+      this.novoNome="",
+      this.novoEmail="",
+      this.novoStatus="",
+      this.emailInserido="",
+      this.user= [],
+
     this.erros = false;
   } catch (error) {
     this.erros = true;

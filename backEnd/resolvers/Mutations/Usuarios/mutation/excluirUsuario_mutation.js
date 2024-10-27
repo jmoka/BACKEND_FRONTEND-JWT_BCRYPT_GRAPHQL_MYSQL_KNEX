@@ -5,35 +5,41 @@ const validarNomeUsuarios = require("@data/validacoes/ValidarUsuarios/validarNom
 
 module.exports = {
     async excluirUsuario(filtro) {
-        const { id, nome, email } = filtro; 
+        const { id } = filtro; 
 
         let usuarioEncontrado;
 
         // Validar e buscar o usuário
         if (id) {
+            console.log(id+"idddd");
+            
             await validarIdUsuarios(id);
             usuarioEncontrado = await db("usuarios").where({ id }).first();
+            console.log(usuarioEncontrado);
+            
             if (!usuarioEncontrado) {
                 throw new Error(`Usuario com Id ${id} não encontrado!!`);
             }     
                            
-           await db("usuario-perfis").where({ usuario_id: id }).del()
+           await db("usuarioperfis").where({ usuario_id: id }).del()
+       
+           await db("usuarios").where({ id }).del();
 
-        } else if (nome) {
-            await validarNomeUsuarios(nome);
-            usuarioEncontrado = await db("usuarios").where({ nome }).first();
-            if (!usuarioEncontrado) {
-                throw new Error(`Usuario com Nome ${nome} não encontrado!!`);
-            }
-           await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
+        // } else if (nome) {
+        //     await validarNomeUsuarios(nome);
+        //     usuarioEncontrado = await db("usuarios").where({ nome }).first();
+        //     if (!usuarioEncontrado) {
+        //         throw new Error(`Usuario com Nome ${nome} não encontrado!!`);
+        //     }
+        //    await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
         
-        } else if (email) {
-            await validarEmail(email);
-            usuarioEncontrado = await db("usuarios").where({ email }).first();
-            if (!usuarioEncontrado) {
-                throw new Error(`Usuario com Email ${Email} não encontrado!!`);
-            }
-           await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
+        // } else if (email) {
+        //     await validarEmail(email);
+        //     usuarioEncontrado = await db("usuarios").where({ email }).first();
+        //     if (!usuarioEncontrado) {
+        //         throw new Error(`Usuario com Email ${Email} não encontrado!!`);
+        //     }
+        //    await db("usuario-perfis").where({ usuario_id: usuarioEncontrado.id }).del()
         }
      
  
