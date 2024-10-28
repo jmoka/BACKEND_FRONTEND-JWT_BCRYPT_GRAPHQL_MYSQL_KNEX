@@ -1,31 +1,34 @@
-const db = require("@data/db")
+const db = require("@data/db");
+
 module.exports = {
-    async alterarUsuario( user, filtro) {
-        const { id } = filtro
-       
-        let usuarioEncontrado;
+    async alterarUsuario(user, filtro) {
+        const { id } = filtro;
+        console.log("filtro ID: " + id);
+
         const atualizacoes = {
             nome: user.nome,
             email: user.email,
             perfil: user.perfil,
             status: user.status,
         };
+
         try {
             if (id) {
-                usuarioEncontrado = await db("usuarios")
+                // Atualiza o usuário na tabela `usuarios`
+                await db("usuarios")
                     .where({ id })
-                    .update(atualizacoes)
-                usuarioEncontrado = await db("usuarios")
+                    .update(atualizacoes);
+
+                let usuarioEncontrado = await db("usuarios")
                     .where({ id }).first();
-                    if (!usuarioEncontrado) {
-                        throw new Error("Usuário não encontrado.");
-                    }
 
-                    await db("usuarios").where({ id }).update(atualizacoes);
-                usuarioEncontrado = await db("usuarios").where({ id }).first();
+                if (!usuarioEncontrado) {
+                    throw new Error("Usuário não encontrado.");
+                }
 
-
-                const perfil = await db("perfis").where({ id: usuarioEncontrado.perfil }).first()
+                // Busca o perfil atualizado do usuário
+                const perfil = await db("perfis").where({ id: usuarioEncontrado.perfil }).first();
+                
                 const retorno = {
                     id: usuarioEncontrado.id,
                     nome: usuarioEncontrado.nome,
@@ -37,52 +40,19 @@ module.exports = {
                         nome: perfil.nome,
                         rotulo: perfil.rotulo
                     }
-                }
-                console.log(`Usuário com ID: ${retorno.id} atualizado com sucesso!! `);
-                return retorno;
-            } else if (nome) {
-                usuarioEncontrado = await db("usuarios")
-                    .where({ nome })
-                    .update(atualizacoes)
-                usuarioEncontrado = await db("usuarios")
-                    .where({ nome }).first();
-                const perfil = await db("perfis").where({ id: usuarioEncontrado.perfil }).first()
-                const retorno = {
-                    id: usuarioEncontrado.id,
-                    nome: usuarioEncontrado.nome,
-                    email: usuarioEncontrado.email,
-                    status: usuarioEncontrado.status,
-                    dataCriacao: usuarioEncontrado.data_criacao,
-                    perfil: {
-                        id: perfil.id,
-                        nome: perfil.nome,
-                        rotulo: perfil.rotulo
-                    }
-                }
-                console.log(`Usuário com Nome: ${retorno.nome} atualizado com sucesso!! `);
-                return retorno;
-            } else if (email) {
-             
-                usuarioEncontrado = await db("usuarios")
-                    .where({ email })
-                    .update(atualizacoes)
-                usuarioEncontrado = await db("usuarios")
-                    .where({ email }).first();
-                const perfil = await db("perfis").where({ id: usuarioEncontrado.perfil }).first()            
-                const retorno = {
-                    id: usuarioEncontrado.id,
-                    nome: usuarioEncontrado.nome,
-                    email: usuarioEncontrado.email,
-                    status: usuarioEncontrado.status,
-                    dataCriacao: usuarioEncontrado.data_criacao,
-                    perfil: {
-                        id: perfil.id,
-                        nome: perfil.nome,
-                        rotulo: perfil.rotulo
-                    }
-                }
-                console.log(`Usuário com Email: ${retorno.email} atualizado com sucesso!! `);
-                       
+                };
+
+                console.log(`Usuário com ID: ${retorno.id} atualizado com sucesso!`);
+
+                // Atualiza a associação específica do perfil na tabela `usuarioPerfis`
+                await db("usuarioPerfis")
+                    .where({ usuario_id: id })  // Adicione a condição para o ID do usuário
+                    .update({
+                        perfil_id: user.perfil
+                    });
+
+                console.log(`Tabela usuarioPerfis atualizada para o usuário com ID: ${id} e perfil ID: ${user.perfil}`);
+
                 return retorno;
             } else {
                 throw new Error("Nenhum critério válido foi fornecido para atualizar o usuário.");
@@ -91,41 +61,4 @@ module.exports = {
             throw new Error(`Erro ao atualizar usuário: ${error.message}`);
         }
     }
-}
-
-
-// mutation{
-//     alterarUsuario(
-//         user:{
-//         nome:"j"
-//         email:"jjok~~ta@xxx.com"
-//         status:INATIVO
-//         perfil:3
-//       }    
-//       filtro:{
-//          id: 3
-//          nome: "jooa"
-//         email:"jjok~~ta@xxx.com"
-//       }
-//     )
-//     {
-//       id
-//       nome
-//       email
-//       status
-//       dataCriacao
-//       perfil{
-//         id
-//         nome
-//         rotulo
-//     }
-      
-//   }
-  
-//     }
-  
-  
-      
-    
-  
-  
+};

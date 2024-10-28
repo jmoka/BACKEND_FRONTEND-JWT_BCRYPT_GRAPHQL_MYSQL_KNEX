@@ -48,7 +48,7 @@ module.exports = {
             // Associa o perfil ao usuário na tabela de relacionamento
             let UsuarioPerfil = {
                 usuario_id: usuario.id,
-                perfil_id: user.perfil || perfilDefault
+                perfil_id: user.perfil || 4
             };
             await db("usuarioPerfis").insert(UsuarioPerfil);
 
