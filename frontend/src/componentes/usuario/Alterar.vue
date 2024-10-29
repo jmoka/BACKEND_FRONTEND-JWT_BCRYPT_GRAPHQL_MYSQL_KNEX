@@ -35,10 +35,9 @@
             label="Novo Nome"
             v-model="novoNome"
           />
-          <v-text-field
-            label="Novo Email"
-            v-model="novoEmail"
-          />
+          <v-text-field label="Novo E-mail" v-model="usuario.email" type="email"  
+          :rules="[v => !!v || 'E-mail é obrigatório', v => /.+@.+\..+/.test(v) || 'E-mail deve conter @ e um domínio']"
+        />
           <v-text-field
             label="Novo Status"
             v-model="novoStatus"

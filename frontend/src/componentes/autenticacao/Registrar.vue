@@ -9,8 +9,15 @@
                         <Erros :erros="erros" />
                     </div>
                     <v-text-field label="Nome" v-model="usuario.nome" />
-                    <v-text-field label="E-mail" v-model="usuario.email" />
-                    <v-text-field label="Senha" v-model="usuario.senha" type="password" />
+                    <v-text-field label="E-mail" v-model="usuario.email" type="email"  
+                      :rules="[v => !!v || 'E-mail é obrigatório', v => /.+@.+\..+/.test(v) || 'E-mail deve conter @ e um domínio']"
+                    />
+                    
+                    <v-text-field v-if="visivel"  label="Senha" v-model="usuario.senha" type="password" />
+                    <v-text-field v-else label="Senha" v-model="usuario.senha" type="text" />
+                    <v-btn @click="mostrar">
+                        <i class="fas fa-eye"></i> Mostrar
+                      </v-btn>
                     <v-btn color="primary" class="ml-0 mt-3" @click="registrar">
                         Registrar
                     </v-btn>
@@ -41,6 +48,7 @@ export default {
     components: { Erros },
     data() {
         return {
+            visivel : true,
             usuario: {
                 nome: '',
                 email: '',
@@ -51,6 +59,9 @@ export default {
         };
     },
     methods: {
+        mostrar(){
+           this.visivel = this.visivel ? false : true
+        },
         registrar() {
             console.log("registrar");
             

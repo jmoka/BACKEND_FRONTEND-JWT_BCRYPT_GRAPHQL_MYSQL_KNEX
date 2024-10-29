@@ -6,12 +6,20 @@
           <h1 class="headline">Consultar Usuário</h1>
           <v-divider class="mb-3" />
           <div v-if="erros">
-            <Erros :erros="erros" />
+            <v-alert :value="true" type="error">
+              {{ msg }}
+            </v-alert>
           </div>
-          <v-text-field label="ID" v-model.number="usuario.id" />
-          <v-text-field label="E-mail" v-model="usuario.email" />
-          <v-btn color="primary" class="ml-0 mt-3" @click="consultar">
-            Consultar
+          <v-select
+            label="Usuários"
+            v-model="idInserido"
+            :items="user"
+            item-value="id"
+            item-text="nome"
+            @change="consultar"
+          />
+          <v-btn class="ml-0 mt-3" @click="obterUsuarios">
+            Obter Usuários
           </v-btn>
         </v-layout>
       </v-flex>
@@ -32,67 +40,108 @@
 </template>
 
 <script>
-import Erros from '../comum/Erros'
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 const jwt = require("jsonwebtoken");
 
 export default {
-  components: { Erros },
   data() {
     return {
       usuario: {
-        id: "",
-        email: ""
+        id: null,
+        nome: '',
+        email: '',
+        status: ''
       },
+      idInserido: null,
+      user: [],
       dados: null,
-      erros: null
-    }
+      erros: false,
+      msg: ''
+    };
   },
   computed: {
     perfisRotulos() {
       return this.dados && this.dados.perfil
         ? `${this.dados.perfil.nome} (${this.dados.perfil.rotulo})`
-        : ''
+        : '';
     }
   },
   methods: {
     consultar() {
-      // Checar se o ID ou o email foram fornecidos
-      if (this.usuario.email) {
-        // Consulta por email
-        this.$api.query({
-          query: gql`
-            query usuarioEmailConsulta($email: String) {
-          usuarioEmailConsulta(email: $email) {
-            id
-            nome
-            email
-            perfil {
-              nome
-              rotulo
+      if (this.idInserido) {
+        console.log('Consultando usuário com ID:', this.idInserido);
+        // Verifica o token antes de fazer a consulta
+        if (!this.handleTokenAndData()) return;
+
+        this.$api
+          .query({
+            query: gql`
+              query usuarioID($id: Int!) {
+                usuarioID(id: $id) {
+                  id
+                  nome
+                  email
+                  perfil {
+                    nome
+                    rotulo
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: parseInt(this.idInserido)
             }
-          }
+          })
+          .then((resultado) => {
+            console.log('Resultado da consulta:', resultado);
+            this.dados = resultado.data.usuarioID;
+          })
+          .catch((e) => {
+            this.msg = 'Erro ao consultar usuário: ' + e.message;
+            this.erros = true;
+            console.log(e);
+          });
+      } else {
+        alert('Por favor, selecione um usuário.');
+      }
+    },
+    handleTokenAndData() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const decode = jwt.decode(token);
+          console.log('Token decodificado:', decode);
+
+          if (decode.status !== 'ATIVO') throw new Error('Usuário não está ativo');
+          if (decode.perfil.nome !== 'admin' && decode.perfil.nome !== 'mast')
+            throw new Error('Perfil não autorizado');
+
+          this.erros = false;
+          return true; // Autorizado
+        } catch (e) {
+          this.msg = 'Erro ao decodificar o token: ' + e.message;
+          this.erros = true;
+          console.log(e);
+          return false; // Não autorizado
         }
-      `,
-          variables: {
-            email: this.usuario.email
-          }
-        })
-        .then((resultado) => {
-          this.handleTokenAndData(resultado.data.usuarioEmailConsulta);
-        })
-        .catch((error) => {
-          this.erros = error.message;
-        });
-      } else if (this.usuario.id) {
-        // Consulta por ID
-        this.$api.query({
+      } else {
+        alert('Usuário não logado! Faça o login e tente novamente.');
+        return false;
+      }
+    },
+    obterUsuarios() {
+      console.log('Obtendo lista de usuários...');
+      if (!this.handleTokenAndData()) return;
+
+      this.$api
+        .query({
           query: gql`
-            query usuarioID($id: Int) {
-              usuarioID(id: $id) {
+            query {
+              usuarios {
                 id
                 nome
                 email
+                status
                 perfil {
                   nome
                   rotulo
@@ -100,43 +149,20 @@ export default {
               }
             }
           `,
-          variables: {
-            id: this.usuario.id
-          }
+          fetchPolicy: 'network-only'
         })
-        .then((resultado) => {
-          this.handleTokenAndData(resultado.data.usuarioID);
+        .then((resposta) => {
+          console.log('Resposta ao obter usuários:', resposta);
+          this.user = resposta.data.usuarios;
         })
-        .catch((error) => {
-          this.erros = error.message;
+        .catch((e) => {
+          this.msg = 'Erro ao obter usuários: ' + e.message;
+          this.erros = true;
+          console.log(e);
         });
-      } else {
-        alert("Por favor, forneça o ID ou o E-mail do usuário.");
-      }
-    },
-    handleTokenAndData(dadosUsuario) {
-      this.token = localStorage.getItem("token");
-      if (this.token) {
-        try {
-          this.decode = jwt.decode(this.token);  // Decodifica sem verificar
-          console.log("Token Decodificado:", this.decode);
-          
-          if (this.decode.status !== "ATIVO") throw new Error("Não Ativo");
-          if (this.decode.perfil.nome !== "admin" && this.decode.perfil.nome !== "mast") throw new Error("Perfil não Autorizado");
-          
-          // Popula os dados com o retorno correto
-          this.dados = dadosUsuario;
-          this.erros = null;
-          
-        } catch (error) {
-          console.error("Erro ao decodificar o token:", error);
-        }
-      } else {
-        alert("Usuário não Logado! Faça o login e tente novamente");
-      }
     }
   }
-}
+};
 </script>
 
 <style>

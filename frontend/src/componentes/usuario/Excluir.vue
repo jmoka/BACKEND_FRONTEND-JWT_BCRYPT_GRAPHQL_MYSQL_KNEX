@@ -145,7 +145,7 @@ export default {
     },
     async obterUsuarios() {
       try {
-        const resultado = await this.$api.query({
+        await this.$api.query({
           query: gql`
             query {
               usuarios {
@@ -158,6 +158,7 @@ export default {
             }
           `,
           fetchPolicy: 'network-only'
+            
         }).then(resposta =>{
           this.handleTokenAndData(resposta.data.resultado);
           this.user = resposta.data.usuarios;
