@@ -5,7 +5,7 @@
  */
 exports.seed = async function (knex) {
 
-    await knex('usuario-perfis').insert([
+    await knex('usuarioperfis').insert([
         // inserindo o perfil o admin na tabela referência
         {
             usuario_id: 1,
